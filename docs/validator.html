@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <title>Validator</title>
+  </head>
+  <body>
+<div class="container"><div class="row"><div class="col"><div class="card my-4"><div class="card-body"><div id="user-input"><h3>Validate your The Sims 4 installation</h3><div class="alert alert-info">Selecting .md5 file is optional but recommended. <a href="md5.html">Click to see how to create one.</a></div></div><div id="hashing" style="display: none;"><div>Hashing:</div><div class="progress"><div class="progress-bar" id="hashing-progress" style="width: 0; transition: unset;"></div></div><div>Total progress:</div><div class="progress"><div class="progress-bar" id="total-progress" style="width: 0;"></div></div></div><div class="accordion" id="report" style="display: none;"><h3>Result (pick one format)</h3></div></div><div class="card-footer"></div></div><div class="card my-4"><div id="disqus_thread" class="card-body"></div><script type="text/javascript">
+              (function(w, d) {
+                const link = w.location.href;
+                const t = d.querySelector('#disqus_thread');
+                if(w.parent != w || !link.startsWith('https://anadius.github.io/sims-4-tools/')) {
+                  t.innerHTML = 'Comment on original page.';
+                  return;
+                }
+
+                const baseLink = link.replace(/[\?&#].*$/, '');
+                w.disqus_config = function () {
+                  this.page.url = baseLink.toLowerCase();
+                };
+                var dsq = d.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'https://ts4installer.disqus.com/embed.js';
+                (d.head || d.body).appendChild(dsq);
+              })(window, document);
+            </script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript=ts4installer">comments powered by Disqus.</a></noscript></div></div></div></div><!-- Optional JavaScript --><!-- jQuery first, then Popper.js, then Bootstrap JS --><script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script><script>
+
+const GITHUB_URL = 'https://anadius.github.io/ts4installer-tumblr-files/';
+
+const setAttributes = (el, attrs) => {
+  Object.keys(attrs).forEach(key => el.setAttribute(key, attrs[key]));
+};
+
+const addJS = (url, integrity) => new Promise((resolve, reject) => {
+  const js = document.createElement('script');
+  js.onload = resolve;
+  js.onerror = reject;
+  let attributes = {src: url};
+  if(typeof integrity != 'undefined')
+    Object.assign(attributes, {integrity: integrity, crossorigin: 'anonymous'});
+  setAttributes(js, attributes);
+  document.body.appendChild(js);
+});
+
+(() => {
+  addJS(GITHUB_URL + 'scripts/validator.js');
+})();
+
+</script>
+</body></html>
