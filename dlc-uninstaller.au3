@@ -70,13 +70,22 @@ Func ShowGUI()
         $hUnCheckAll, $hUninstall, $hGUI = GUICreate('DLC uninstaller', 400, 500) ; create main GUI
 
     $aDLCInfo = GetDLCInfo()
+    GUICtrlCreateLabel('made by anadius', 9, $iFromTop)
+    $rin = GUICtrlCreateLabel('CS RIN', 100, $iFromTop)
+    GUICtrlSetColor(-1, 0x0000FF)
+    GUICtrlSetCursor(-1, 0)
+    $dsc = GUICtrlCreateLabel('Discord', 150, $iFromTop)
+    GUICtrlSetColor(-1, 0x0000FF)
+    GUICtrlSetCursor(-1, 0)
+
+    $iFromTop += 20
     $hUnCheckAll = GUICtrlCreateCheckbox('(un)check all', 9, $iFromTop)
     $hUninstall = GUICtrlCreateButton('Uninstall', 100, $iFromTop-2)
 
     For $i = 0 To UBound($aDLCInfo) - 1
         If Mod($i, 20) == 0 Then
             $iMaxHeight = $iFromTop + 33
-            $iFromTop = 30
+            $iFromTop = 50
             $iTotlaWidth += $iMaxWidth + 9
             $iMaxWidth = -1
         EndIf
@@ -104,12 +113,16 @@ Func ShowGUI()
                 For $i = 0 To UBound($aDLCInfo) - 1
                     GUICtrlSetState($aDLCInfo[$i][$iHANDLE], $bState)
                 Next
+            Case $dsc
+                ShellExecute('https://discord.gg/4GQED4Q')
+            Case $rin
+                ShellExecute('https://cs.rin.ru/forum/memberlist.php?mode=viewprofile&u=620946')
             Case $hUninstall
                 For $i = 0 To UBound($aDLCInfo) - 1
                     If GuiCtrlRead($aDLCInfo[$i][$iHANDLE]) == $GUI_CHECKED Then
                         DirRemove($aDLCInfo[$i][$iCODE], $DIR_REMOVE)
                         DirRemove('__Installer\DLC\' & $aDLCInfo[$i][$iCODE], $DIR_REMOVE)
-                        Run('dlc-toggler.exe disable ' & $aDLCInfo[$i][$iCODE])
+                        RunWait('dlc-toggler.exe disable ' & $aDLCInfo[$i][$iCODE])
                     EndIf
                 Next
                 ExitLoop

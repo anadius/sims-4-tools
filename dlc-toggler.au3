@@ -17,11 +17,13 @@
 
 Global Const $iHANDLE = 0, $iENABLED = 1, $iNAME = 2, $iCODE = 3, $iMISSING = 4, _
     $sTogglerConfig = 'dlc.ini', $sExportFile = 'dlc-toggler-export.ini', _
-    $sCrackConfigs[3] = [ _
+    $sCrackConfigs[4] = [ _
+        'Game-cracked\Bin\RldOrigin.ini', _
         'Game-cracked\Bin\codex.cfg', _
         'Game\Bin\RldOrigin.ini', _
         'Game\Bin\codex.cfg'], _
-    $sCrackRegExps[3] = [ _
+    $sCrackRegExps[4] = [ _
+        '(?i)(=%s[\r\n]+ETG.*?[\r\n]+GRP\d+=)([^\r\n]+)', _
         '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)', _
         '(?i)(=%s[\r\n]+ETG.*?[\r\n]+GRP\d+=)([^\r\n]+)', _
         '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)'], _
@@ -206,11 +208,20 @@ Func ShowGUI()
     Local $iFromTop = 5, $bState, $aPos, $iMaxWidth = 0, $iTotlaWidth = 0, _
         $hGUI = GUICreate('DLC toggler', 400, 500) ; create main GUI
 
+    GUICtrlCreateLabel('made by anadius', 9, $iFromTop)
+    $rin = GUICtrlCreateLabel('CS RIN', 100, $iFromTop)
+    GUICtrlSetColor(-1, 0x0000FF)
+    GUICtrlSetCursor(-1, 0)
+    $dsc = GUICtrlCreateLabel('Discord', 150, $iFromTop)
+    GUICtrlSetColor(-1, 0x0000FF)
+    GUICtrlSetCursor(-1, 0)
+
+    $iFromTop += 20
     $hUnCheckAll = GUICtrlCreateCheckbox('(un)check all', 9, $iFromTop)
 
     For $i = 0 To UBound($aDLCInfo) - 1
         If Mod($i, 20) == 0 Then
-            $iFromTop = 27
+            $iFromTop = 47
             $iTotlaWidth += $iMaxWidth + 9
             $iMaxWidth = -1
         EndIf
@@ -234,7 +245,7 @@ Func ShowGUI()
 
     $iTotlaWidth += $iMaxWidth + 11
     ; 
-    WinMove ($hGUI, '', Default, Default, $iTotlaWidth, 500)
+    WinMove ($hGUI, '', Default, Default, $iTotlaWidth, 520)
     ; show GUI
     GUISetState(@SW_SHOW, $hGUI)
 
@@ -245,6 +256,10 @@ Func ShowGUI()
                 For $i = 0 To UBound($aDLCInfo) - 1
                     GUICtrlSetState($aDLCInfo[$i][$iHANDLE], $bState)
                 Next
+            Case $dsc
+                ShellExecute('https://discord.gg/4GQED4Q')
+            Case $rin
+                ShellExecute('https://cs.rin.ru/forum/memberlist.php?mode=viewprofile&u=620946')
             Case $GUI_EVENT_CLOSE
                 ExitLoop
         EndSwitch
