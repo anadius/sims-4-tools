@@ -23,12 +23,13 @@ Global Const $iHANDLE = 0, $iENABLED = 1, $iNAME = 2, $iCODE = 3, $iMISSING = 4,
         'Game\Bin\RldOrigin.ini', _
         'Game\Bin\codex.cfg'], _
     $sCrackRegExps[4] = [ _
-        '(?i)(=%s[\r\n]+ETG.*?[\r\n]+GRP\d+=)([^\r\n]+)', _
-        '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)', _
-        '(?i)(=%s[\r\n]+ETG.*?[\r\n]+GRP\d+=)([^\r\n]+)', _
-        '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)'], _
+        '(?i)(\n)(;?)(IID\d+=%s)', _
+        '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)()', _
+        '(?i)(\n)(;?)(IID\d+=%s)', _
+        '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)()'], _
     $sKEY = '\SOFTWARE\Maxis\The Sims 4', $sVALUENAME = 'Locale', _
-    $sValidGroup = 'THESIMS4PC'
+    $sValidGroups[4] = ['', 'THESIMS4PC', '', 'THESIMS4PC'], _
+    $sInvalidGroups[4] = [';', '_', ';', '_']
 Global $iCrack, $bConfigModified = False, _
     $sConfig, $aDLCInfo
 
@@ -87,7 +88,13 @@ EndFunc
 ; save crack config if modified
 Func SaveConfig()
     If $bConfigModified Then
-        Local $hFileOpen = FileOpen($sCrackConfigs[$iCrack], $FO_OVERWRITE + $FO_UTF8)
+        Local $iMode
+        If StringRight($sCrackConfigs[$iCrack], 9) == 'codex.cfg' Then
+            $iMode = $FO_OVERWRITE + $FO_UTF8
+        Else
+            $iMode = $FO_OVERWRITE
+        EndIf
+        Local $hFileOpen = FileOpen($sCrackConfigs[$iCrack], $iMode)
         FileWrite($hFileOpen, $sConfig)
         FileClose($hFileOpen)
     EndIf
@@ -124,18 +131,18 @@ EndFunc
 Func IsDLCEnabled($sSection)
     $aMatches = StringRegExp($sConfig, RegExpPattern($sSection), $STR_REGEXPARRAYMATCH)
     If @error == 1 Then Return -1
-    Return $aMatches[1] == $sValidGroup
+    Return $aMatches[1] == $sValidGroups[$iCrack]
 EndFunc
 
 Func SetDLCVisibility($sSection, $bEnabled)
     Local $sGroup
     If $bEnabled Then
-        $sGroup = $sValidGroup
+        $sGroup = $sValidGroups[$iCrack]
     Else
-        $sGroup = '_'
+        $sGroup = $sInvalidGroups[$iCrack]
     EndIf
     $bConfigModified = True
-    $sConfig = StringRegExpReplace($sConfig, RegExpPattern($sSection), '$1' & $sGroup, 1)
+    $sConfig = StringRegExpReplace($sConfig, RegExpPattern($sSection), '$1' & $sGroup & '$3', 1)
 EndFunc
 
 Func GetDLCInfo()
