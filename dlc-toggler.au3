@@ -97,6 +97,7 @@ Func SaveConfig()
         Local $hFileOpen = FileOpen($sCrackConfigs[$iCrack], $iMode)
         FileWrite($hFileOpen, $sConfig)
         FileClose($hFileOpen)
+        FileCopy($sCrackConfigs[$iCrack], StringReplace($sCrackConfigs[$iCrack], 'Bin', 'Bin_LE'), $FC_OVERWRITE)
     EndIf
 EndFunc
 
