@@ -71,10 +71,15 @@ Func ShowGUI()
 
     $aDLCInfo = GetDLCInfo()
     GUICtrlCreateLabel('made by anadius', 9, $iFromTop)
-    $rin = GUICtrlCreateLabel('CS RIN', 100, $iFromTop)
+    $dsc = GUICtrlCreateLabel('Discord', 100, $iFromTop, 38)
     GUICtrlSetColor(-1, 0x0000FF)
     GUICtrlSetCursor(-1, 0)
-    $dsc = GUICtrlCreateLabel('Discord', 150, $iFromTop)
+    GUICtrlCreateLabel('CS RIN:', 140, $iFromTop, 40)
+    $rin = GUICtrlCreateLabel('profile', 182, $iFromTop, 28)
+    GUICtrlSetColor(-1, 0x0000FF)
+    GUICtrlSetCursor(-1, 0)
+    GUICtrlCreateLabel('/', 212, $iFromTop, 5)
+    $rin2 = GUICtrlCreateLabel('game thread', 219, $iFromTop)
     GUICtrlSetColor(-1, 0x0000FF)
     GUICtrlSetCursor(-1, 0)
 
@@ -99,7 +104,7 @@ Func ShowGUI()
 
     $iTotlaWidth += $iMaxWidth + 11
     $iMaxHeight = _Max($iMaxHeight, $iFromTop + 33)
-    $iTotlaWidth = _Max($iTotlaWidth, 200)
+    $iTotlaWidth = _Max($iTotlaWidth, 290)
     ; 
     WinMove ($hGUI, '', Default, Default, $iTotlaWidth, $iMaxHeight)
     ; show GUI
@@ -117,6 +122,8 @@ Func ShowGUI()
                 ShellExecute('https://discord.gg/4GQED4Q')
             Case $rin
                 ShellExecute('https://cs.rin.ru/forum/memberlist.php?mode=viewprofile&u=620946')
+            Case $rin2
+                ShellExecute('https://cs.rin.ru/forum/viewtopic.php?f=10&t=65003')
             Case $hUninstall
                 For $i = 0 To UBound($aDLCInfo) - 1
                     If GuiCtrlRead($aDLCInfo[$i][$iHANDLE]) == $GUI_CHECKED Then

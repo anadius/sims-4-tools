@@ -217,10 +217,15 @@ Func ShowGUI()
         $hGUI = GUICreate('DLC toggler', 400, 500) ; create main GUI
 
     GUICtrlCreateLabel('made by anadius', 9, $iFromTop)
-    $rin = GUICtrlCreateLabel('CS RIN', 100, $iFromTop)
+    $dsc = GUICtrlCreateLabel('Discord', 100, $iFromTop, 38)
     GUICtrlSetColor(-1, 0x0000FF)
     GUICtrlSetCursor(-1, 0)
-    $dsc = GUICtrlCreateLabel('Discord', 150, $iFromTop)
+    GUICtrlCreateLabel('CS RIN:', 140, $iFromTop, 40)
+    $rin = GUICtrlCreateLabel('profile', 182, $iFromTop, 28)
+    GUICtrlSetColor(-1, 0x0000FF)
+    GUICtrlSetCursor(-1, 0)
+    GUICtrlCreateLabel('/', 212, $iFromTop, 5)
+    $rin2 = GUICtrlCreateLabel('game thread', 219, $iFromTop)
     GUICtrlSetColor(-1, 0x0000FF)
     GUICtrlSetCursor(-1, 0)
 
@@ -268,6 +273,8 @@ Func ShowGUI()
                 ShellExecute('https://discord.gg/4GQED4Q')
             Case $rin
                 ShellExecute('https://cs.rin.ru/forum/memberlist.php?mode=viewprofile&u=620946')
+            Case $rin2
+                ShellExecute('https://cs.rin.ru/forum/viewtopic.php?f=10&t=65003')
             Case $GUI_EVENT_CLOSE
                 ExitLoop
         EndSwitch
