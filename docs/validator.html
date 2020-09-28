@@ -11,16 +11,16 @@
   <body>
 <div class="container"><div class="row"><div class="col"><div class="card my-4"><div class="card-body"><div id="user-input"><h3>Validate your The Sims 4 installation</h3><div class="alert alert-warning">Read the <a href="https://www.reddit.com/r/CrackSupport/comments/eskpgu/the_sims_4_troubleshooting_guide/">Troubleshooting Guide</a> before using the validator.</div><div id="md5info" class="alert alert-info">Selecting .md5 file is optional but recommended. <a href="md5.html">Click to see how to create one.</a></div></div><div id="hashing" style="display: none;"><div>Hashing:</div><div class="progress"><div class="progress-bar" id="hashing-progress" style="width: 0; transition: unset;"></div></div><div>Total progress:</div><div class="progress"><div class="progress-bar" id="total-progress" style="width: 0;"></div></div></div><div class="accordion" id="report" style="display: none;"><h3>Where do you want to post the result?</h3></div></div><div class="card-footer"></div></div><div class="card my-4"><div id="disqus_thread" class="card-body"></div><script type="text/javascript">
               (function(w, d) {
-                const link = w.location.href;
+                const link = w.location;
                 const t = d.querySelector('#disqus_thread');
-                if(w.parent != w || !link.startsWith('https://anadius.github.io/sims-4-tools/')) {
+                if(w.parent != w || link.hostname !== 'anadius.github.io' || !link.pathname.startsWith('/sims-4-tools/')) {
                   t.innerHTML = 'Comment on original page.';
                   return;
                 }
 
-                const baseLink = link.replace(/[\?&#].*$/, '');
+                const path = link.pathname.replace(/\/+/g, '/').replace(/(?:(?:index)?\.html)?$/, '');
                 w.disqus_config = function () {
-                  this.page.url = baseLink.toLowerCase();
+                  this.page.url = ('https://' + link.host + path).toLowerCase();
                 };
                 var dsq = d.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                 dsq.src = 'https://ts4installer.disqus.com/embed.js';

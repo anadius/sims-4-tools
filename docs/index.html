@@ -11,16 +11,16 @@
   <body>
 <div class="container"><div class="row"><div class="col"><div class="card my-4"><div class="card-body"><p><a href="validator.html">Validator</a><br><a href="gallery.html">Gallery downloader</a><br><a href="donate.html">Donate</a></p></div><div class="card-footer"></div></div><div class="card my-4"><div id="disqus_thread" class="card-body"></div><script type="text/javascript">
               (function(w, d) {
-                const link = w.location.href;
+                const link = w.location;
                 const t = d.querySelector('#disqus_thread');
-                if(w.parent != w || !link.startsWith('https://anadius.github.io/sims-4-tools/')) {
+                if(w.parent != w || link.hostname !== 'anadius.github.io' || !link.pathname.startsWith('/sims-4-tools/')) {
                   t.innerHTML = 'Comment on original page.';
                   return;
                 }
 
-                const baseLink = link.replace(/[\?&#].*$/, '');
+                const path = link.pathname.replace(/\/+/g, '/').replace(/(?:(?:index)?\.html)?$/, '');
                 w.disqus_config = function () {
-                  this.page.url = baseLink.toLowerCase();
+                  this.page.url = ('https://' + link.host + path).toLowerCase();
                 };
                 var dsq = d.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                 dsq.src = 'https://ts4installer.disqus.com/embed.js';

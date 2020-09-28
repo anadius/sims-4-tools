@@ -14,16 +14,16 @@
 <p>If you have Firefox, install <a href="https://addons.mozilla.org/firefox/addon/greasemonkey/" target="_blank">Greasemonkey</a>, <a href="https://addons.mozilla.org/firefox/addon/tampermonkey/" target="_blank">Tampermonkey</a> or <a href="https://addons.mozilla.org/firefox/addon/violentmonkey/" target="_blank">Violentmonkey</a>.</p>
 <p><a href="https://imgur.com/a/eTFHeVx" target="_blank">tutorial for Chrome + Tampermonkey</a><br /><a href="https://imgur.com/a/DUkO7Mt" target="_blank">tutorial for Firefox + Greasemonkey</a><br /><a href="https://imgur.com/a/BqElZ8v" target="_blank">tutorial for "installing" downloaded files</a></p></div><div class="card-footer"></div></div><div class="card my-4"><div id="disqus_thread" class="card-body"></div><script type="text/javascript">
               (function(w, d) {
-                const link = w.location.href;
+                const link = w.location;
                 const t = d.querySelector('#disqus_thread');
-                if(w.parent != w || !link.startsWith('https://anadius.github.io/sims-4-tools/')) {
+                if(w.parent != w || link.hostname !== 'anadius.github.io' || !link.pathname.startsWith('/sims-4-tools/')) {
                   t.innerHTML = 'Comment on original page.';
                   return;
                 }
 
-                const baseLink = link.replace(/[\?&#].*$/, '');
+                const path = link.pathname.replace(/\/+/g, '/').replace(/(?:(?:index)?\.html)?$/, '');
                 w.disqus_config = function () {
-                  this.page.url = baseLink.toLowerCase();
+                  this.page.url = ('https://' + link.host + path).toLowerCase();
                 };
                 var dsq = d.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                 dsq.src = 'https://ts4installer.disqus.com/embed.js';
