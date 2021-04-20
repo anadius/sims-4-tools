@@ -17,19 +17,23 @@
 
 Global Const $iHANDLE = 0, $iENABLED = 1, $iNAME = 2, $iCODE = 3, $iMISSING = 4, _
     $sTogglerConfig = 'dlc.ini', $sExportFile = 'dlc-toggler-export.ini', _
-    $sCrackConfigs[4] = [ _
+    $sCrackConfigs[6] = [ _
         'Game-cracked\Bin\RldOrigin.ini', _
         'Game-cracked\Bin\codex.cfg', _
+        'Game-cracked\Bin\anadius.cfg', _
         'Game\Bin\RldOrigin.ini', _
-        'Game\Bin\codex.cfg'], _
-    $sCrackRegExps[4] = [ _
+        'Game\Bin\codex.cfg', _
+        'Game\Bin\anadius.cfg'], _
+    $sCrackRegExps[6] = [ _
         '(?i)(\n)(;?)(IID\d+=%s)', _
         '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)()', _
+        '(?i)(\s)(/*)("%s")', _
         '(?i)(\n)(;?)(IID\d+=%s)', _
-        '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)()'], _
+        '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)()', _
+        '(?i)(\s)(/*)("%s")'], _
     $sKEY = '\SOFTWARE\Maxis\The Sims 4', $sVALUENAME = 'Locale', _
-    $sValidGroups[4] = ['', 'THESIMS4PC', '', 'THESIMS4PC'], _
-    $sInvalidGroups[4] = [';', '_', ';', '_']
+    $sValidGroups[6] = ['', 'THESIMS4PC', '', '', 'THESIMS4PC', ''], _
+    $sInvalidGroups[6] = [';', '_', '//', ';', '_', '//']
 Global $iCrack, $bConfigModified = False, _
     $sConfig, $aDLCInfo
 
