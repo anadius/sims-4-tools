@@ -17,23 +17,27 @@
 
 Global Const $iHANDLE = 0, $iENABLED = 1, $iNAME = 2, $iCODE = 3, $iMISSING = 4, _
     $sTogglerConfig = 'dlc.ini', $sExportFile = 'dlc-toggler-export.ini', _
-    $sCrackConfigs[6] = [ _
+    $sCrackConfigs[8] = [ _
         'Game-cracked\Bin\RldOrigin.ini', _
         'Game-cracked\Bin\codex.cfg', _
         'Game-cracked\Bin\anadius.cfg', _
+        'Game-cracked\Bin\anadius.cfg', _
         'Game\Bin\RldOrigin.ini', _
         'Game\Bin\codex.cfg', _
+        'Game\Bin\anadius.cfg', _
         'Game\Bin\anadius.cfg'], _
-    $sCrackRegExps[6] = [ _
+    $sCrackRegExps[8] = [ _
         '(?i)(\n)(;?)(IID\d+=%s)', _
         '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)()', _
         '(?i)(\s)(/*)("%s")', _
+        '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)()', _
         '(?i)(\n)(;?)(IID\d+=%s)', _
         '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)()', _
-        '(?i)(\s)(/*)("%s")'], _
+        '(?i)(\s)(/*)("%s")', _
+        '(?i)("%s"[\s\n]+\{[^\}]+"Group"\s+")([^"]+)()'], _
     $sKEY = '\SOFTWARE\Maxis\The Sims 4', $sVALUENAME = 'Locale', _
-    $sValidGroups[6] = ['', 'THESIMS4PC', '', '', 'THESIMS4PC', ''], _
-    $sInvalidGroups[6] = [';', '_', '//', ';', '_', '//']
+    $sValidGroups[8] = ['', 'THESIMS4PC', '', 'THESIMS4PC', '', 'THESIMS4PC', '', 'THESIMS4PC'], _
+    $sInvalidGroups[8] = [';', '_', '//', '_', ';', '_', '//', '_']
 Global $iCrack, $bConfigModified = False, _
     $sConfig, $aDLCInfo
 
@@ -78,6 +82,12 @@ Func LoadConfig($sCmdArg = '')
     For $i = UBound($sCrackConfigs) - 1 To 0 Step -1
         $sConfigContent = FileRead($sCrackConfigs[$i])
         If @error == 0 Then
+            ; fall back for old config format
+            If StringRight($sCrackConfigs[$i], 11) == 'anadius.cfg' _
+                And StringInStr($sConfigContent, '"Config2"') == 0 _
+            Then
+                $i = $i - 1
+            EndIf
             $iCrack = $i
             Return $sConfigContent
         EndIf
