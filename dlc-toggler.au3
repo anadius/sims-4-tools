@@ -228,7 +228,7 @@ EndFunc
 
 Func ShowGUI()
     Local $iFromTop = 5, $bState, $aPos, $iMaxWidth = 0, $iTotlaWidth = 0, _
-        $hGUI = GUICreate('DLC toggler', 400, 500) ; create main GUI
+        $hGUI = GUICreate('DLC toggler', 800, 600) ; create main GUI
 
     GUICtrlCreateLabel('made by anadius', 9, $iFromTop)
     $dsc = GUICtrlCreateLabel('Discord', 100, $iFromTop, 38)
@@ -242,7 +242,7 @@ Func ShowGUI()
     $hUnCheckAll = GUICtrlCreateCheckbox('(un)check all', 9, $iFromTop)
 
     For $i = 0 To UBound($aDLCInfo) - 1
-        If Mod($i, 20) == 0 Then
+        If Mod($i, 25) == 0 Then
             $iFromTop = 47
             $iTotlaWidth += $iMaxWidth + 9
             $iMaxWidth = -1
@@ -267,7 +267,7 @@ Func ShowGUI()
 
     $iTotlaWidth += $iMaxWidth + 11
     ; 
-    WinMove ($hGUI, '', Default, Default, $iTotlaWidth, 520)
+    WinMove ($hGUI, '', Default, Default, $iTotlaWidth, 630)
     ; show GUI
     GUISetState(@SW_SHOW, $hGUI)
 
