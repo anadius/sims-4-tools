@@ -228,6 +228,7 @@ EndFunc
 
 Func ShowGUI()
     Local $iFromTop = 5, $bState, $aPos, $iMaxWidth = 0, $iTotlaWidth = 0, _
+        $bAllChecked = True, _
         $hGUI = GUICreate('DLC toggler', 800, 600) ; create main GUI
 
     GUICtrlCreateLabel('made by anadius', 9, $iFromTop)
@@ -258,12 +259,14 @@ Func ShowGUI()
             $bState = $GUI_CHECKED
         Else
             $bState = $GUI_UNCHECKED
+            $bAllChecked = False
         EndIf
         GUICtrlSetState($aDLCInfo[$i][$iHANDLE], $bState)
         ; change background color to red for missing DLCs
         If $aDLCInfo[$i][$iMISSING] Then GUICtrlSetBkColor($aDLCInfo[$i][$iHANDLE], 0xffaaaa)
         $iFromTop += 22
     Next
+    If $bAllChecked Then GUICtrlSetState($hUnCheckAll, $GUI_CHECKED)
 
     $iTotlaWidth += $iMaxWidth + 11
     ; 
