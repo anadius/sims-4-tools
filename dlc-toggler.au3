@@ -16,6 +16,7 @@
 #include <Math.au3>
 
 Global Const $iHANDLE = 0, $iENABLED = 1, $iNAME = 2, $iCODE = 3, $iMISSING = 4, _
+    $iCODE2 = 5, _
     $sTogglerConfig = 'dlc.ini', $sExportFile = 'dlc-toggler-export.ini', _
     $sCrackConfigs[8] = [ _
         'Game-cracked\Bin\RldOrigin.ini', _
@@ -60,6 +61,8 @@ If $CmdLine[0] > 0 And $CmdLine[1] <> '' Then
             Auto()
         Case 'enable', 'disable'
             SetDLCVisibility(IniRead($sTogglerConfig, $CmdLine[2], 'Code', ''), _
+                $CmdLine[1] == 'enable')
+            SetDLCVisibility(IniRead($sTogglerConfig, $CmdLine[2], 'Code2', ''), _
                 $CmdLine[1] == 'enable')
         Case Else
             Exit
@@ -151,6 +154,7 @@ EndFunc
 
 Func SetDLCVisibility($sSection, $bEnabled)
     Local $sGroup
+    If $sSection == '' Then Return
     If $bEnabled Then
         $sGroup = $sValidGroups[$iCrack]
     Else
@@ -181,8 +185,9 @@ Func GetDLCInfo()
     ; $aInfo[n][$iENABLED] - True when DLC enabled, False when disabled
     ; $aInfo[n][$iNAME] - DLC name in format: "[<short code>] <localised name>"
     ; $aInfo[n][$iCODE] - long DLC code used in crack config
+    ; $aInfo[n][$iCODE2] - alternative long DLC code used in crack config
     ; $aInfo[n][$iMISSING] - True when DLC not found
-    Local $aInfo[$aSections[0]][5]
+    Local $aInfo[$aSections[0]][6]
 
     For $i = 0 To $aSections[0] - 1
         $sSection = $aSections[$i+1]
@@ -191,7 +196,11 @@ Func GetDLCInfo()
         $sName = StringReplace($sName, '&', '&&')
         $aInfo[$i][$iNAME] = '[' & $sSection & '] ' & $sName
         $aInfo[$i][$iCODE] = IniRead($sTogglerConfig, $sSection, 'Code', '')
+        $aInfo[$i][$iCODE2] = IniRead($sTogglerConfig, $sSection, 'Code2', '')
         $aInfo[$i][$iENABLED] = IsDLCEnabled($aInfo[$i][$iCODE])
+        If ($aInfo[$i][$iENABLED] == -1) And ($aInfo[$i][$iCODE2] <> '') Then
+            $aInfo[$i][$iENABLED] = IsDLCEnabled($aInfo[$i][$iCODE2])
+        EndIf
         $aInfo[$i][$iMISSING] = Not FileExists($sSection & '\SimulationFullBuild0.package')
     Next
     Return $aInfo
@@ -202,15 +211,22 @@ Func Auto()
     For $i = 0 To UBound($aDLCInfo) - 1
         If $aDLCInfo[$i][$iENABLED] == $aDLCInfo[$i][$iMISSING] Then
             SetDLCVisibility($aDLCInfo[$i][$iCODE], (Not $aDLCInfo[$i][$iENABLED]))
+            SetDLCVisibility($aDLCInfo[$i][$iCODE2], (Not $aDLCInfo[$i][$iENABLED]))
         EndIf
     Next
 EndFunc
 
 ; used before applying patch
 Func Export()
+    Local $sStatus
     For $i = 0 To UBound($aDLCInfo) - 1
-        If Not ($aDLCInfo[$i][$iENABLED] == -1) Then IniWriteSection($sExportFile, _
-            $aDLCInfo[$i][$iCODE], 'Enabled = ' & $aDLCInfo[$i][$iENABLED])
+        If Not ($aDLCInfo[$i][$iENABLED] == -1) Then
+            $sStatus = 'Enabled = ' & $aDLCInfo[$i][$iENABLED]
+            IniWriteSection($sExportFile, $aDLCInfo[$i][$iCODE], $sStatus)
+            If $aDLCInfo[$i][$iCODE2] <> '' Then
+                IniWriteSection($sExportFile, $aDLCInfo[$i][$iCODE2], $sStatus)
+            EndIf
+        EndIf
     Next
 EndFunc
 
@@ -296,6 +312,7 @@ Func ShowGUI()
         ; if state of a button changed - apply it in crack config
         If Not ($aDLCInfo[$i][$iENABLED] == -1) And ($bChecked <> $aDLCInfo[$i][$iENABLED]) Then
             SetDLCVisibility($aDLCInfo[$i][$iCODE], $bChecked)
+            SetDLCVisibility($aDLCInfo[$i][$iCODE2], $bChecked)
         EndIf
     Next
 
