@@ -157,7 +157,7 @@ Func SetDLCVisibility($sSection, $bEnabled)
         $sGroup = $sInvalidGroups[$iCrack]
     EndIf
     $bConfigModified = True
-    $sConfig = StringRegExpReplace($sConfig, RegExpPattern($sSection), '$1' & $sGroup & '$3', 1)
+    $sConfig = StringRegExpReplace($sConfig, RegExpPattern($sSection), '$1' & $sGroup & '$3', 0)
 EndFunc
 
 Func GetDLCInfo()
