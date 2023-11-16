@@ -272,12 +272,6 @@ Func ShowGUI()
         $hGUI = GUICreate('DLC toggler', 800, 600) ; create main GUI
 
     GUICtrlCreateLabel('made by anadius', 9, $iFromTop)
-    $dsc = GUICtrlCreateLabel('Discord', 100, $iFromTop, 38)
-    GUICtrlSetColor(-1, 0x0000FF)
-    GUICtrlSetCursor(-1, 0)
-    $site = GUICtrlCreateLabel('website', 142, $iFromTop, 38)
-    GUICtrlSetColor(-1, 0x0000FF)
-    GUICtrlSetCursor(-1, 0)
 
     $iFromTop += 20
     $hUnCheckAll = GUICtrlCreateCheckbox('(un)check all', 9, $iFromTop)
@@ -321,10 +315,6 @@ Func ShowGUI()
                 For $i = 0 To UBound($aDLCInfo) - 1
                     GUICtrlSetState($aDLCInfo[$i][$iHANDLE], $bState)
                 Next
-            Case $dsc
-                ShellExecute('https://anadius.hermietkreeft.site/discord')
-            Case $site
-                ShellExecute('https://anadius.hermietkreeft.site/')
             Case $GUI_EVENT_CLOSE
                 ExitLoop
         EndSwitch
