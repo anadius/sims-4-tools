@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <title>Hashes</title>
+  </head>
+  <body>
+<div class="container"><div class="row"><div class="col">
+
+<div class="card my-4">
+  <div class="card-body">
+
+<h3>Get MD5 hasehs</h3>
+<form>
+  <div class="form-group">
+    <label for="game_version">Get hashes for game version (the newest version is <code id="version">...</code>)</label>
+    <input type="text" class="form-control" id="game_version">
+  </div>
+  <button type="submit" class="btn btn-primary">Get hashes</button>
+</form>
+
+<div id="hashes" style="padding-top: 20px;"></div>
+
+  </div>
+  <div class="card-footer"></div>
+</div>
+
+</div></div></div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+
+const copy_hashes = (src, dst) => {
+  for(const [k, v] of Object.entries(src)) {
+    if(typeof v === "string") {
+      dst[k] = v;
+    }
+    else {
+      // get the last hash
+      dst[k] = v[v.length - 1];
+    }
+  }
+};
+
+const dict_to_hashes = hashes_dict => {
+  const hashes_list = [];
+  for(const [k, v] of Object.entries(hashes_dict)) {
+    hashes_list.push([k, v]);
+  }
+  hashes_list.sort();
+  const lines = [];
+  for(const [name, hash] of hashes_list) {
+    lines.push(`${hash} *${name}`);
+  }
+  lines.push("");
+  return lines.join("\n");
+};
+
+const URL_PREFIX = 'https://anadius.github.io/ts4installer-tumblr-files/hashes';
+const links = [];
+const hashes_el = document.querySelector("#hashes");
+
+(async () => {
+  document.querySelector("button").addEventListener("click", async e => {
+    e.preventDefault();
+    hashes_el.innerHTML = "";
+    while(links.length > 0) {
+      window.URL.revokeObjectURL(links.pop());
+    }
+
+    const game_version = document.querySelector("#game_version").value;
+    let data = null;
+    try {
+      const response = await fetch(`${URL_PREFIX}/${game_version}.json`);
+      data = await response.json();
+    }
+    catch(error) {
+      console.error(error);
+      alert(`Hashes not found for version ${game_version}!`);
+    }
+
+    const legit_hashes = {};
+    copy_hashes(data.hashes, legit_hashes);
+    const result = [["legit game", legit_hashes]];
+
+    if(typeof data.crack !== "undefined") {
+      for(const [name, _, hashes] of data.crack) {
+        const crack_hashes = {...legit_hashes};
+        copy_hashes(hashes, crack_hashes);
+        result.push([`${name} crack`, crack_hashes]);
+      }
+    }
+
+    for(const [name, hashes] of result) {
+      const blob = new Blob([dict_to_hashes(hashes)]);
+      const link = document.createElement("a");
+      const url = window.URL.createObjectURL(blob);
+      links.push(url);
+      link.style.display = "block";
+      link.innerText = `${name} ${game_version}`;
+      link.href = url;
+      link.download = `${name} ${game_version}.md5`;
+      hashes_el.appendChild(link);
+    }
+  });
+
+  const response = await fetch(`${URL_PREFIX}/latest_version.txt`);
+  document.querySelector("#version").innerText = await response.text();
+})();
+
+</script>
+</body></html>
