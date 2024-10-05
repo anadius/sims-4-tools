@@ -20,11 +20,122 @@
 
 <div class="card my-4"><div class="card-body">
   <h2>Event Rewards Unlocker</h2>
-  <p>Rewards for <b>Happy at Home Login Event</b> were stored locally on your computer. Because of that some people lost them, and so EA decided to add them all to the base game in update version <code>1.109.207</code>. So you no longer need this tool. Rewards for <b>Reaper's Rewards Event</b> are stored on a server. That means unlocking them would work in offline mode only. Every time you start the game online it overwrites a file with reward unlocks. Given all that you should use mods instead - they work both online and offline.</p>
+  <p>The game stores the event rewards and progress in an <code>accountDataDB.package</code> file. By modifying that file you can trick the game into thinking you've unlocked the rewards or completed quests. This tool has two uses:</p>
+  <ol>
+    <li>When an event is live it lets you claim all rewards without doing a single quest. This part works in <b>online mode only</b>, since to claim the rewards you need to be online. Check if the current event is added to the events list below before reporting problems. You can claim all rewards, even from weeks that are still locked, so you <b>claim the rewards at your own risk</b>. I suggest you wait until all weeks are unlocked.</li>
+    <li>If the event has already ended you can still unlock the rewards, but it will work in <b>offline mode only</b>. Every time you start the game online - it will replace the rewards data. It's more convenient to use mods instead. I added this functionality as a bonus.</li>
+  </ol>
+
+  <p>Click on the "Browse" button below, navigate to <code>Documents</code>, <code>Electronic Arts</code>, <code>The Sims 4</code>*, and select the <code>UserSetting.ini</code> file. It may be displayed as just <code>UserSetting</code>. Your browser will prompt you to download an <code>accountDataDB.package</code> file. Put that file in the same folder as the <code>UserSetting.ini</code> file.</p>
+  <p><input type="file" class="form-control-file" accept=".ini"></p>
+  <span>* in some languages this folder is named differently, like <code>Die Sims 4</code>, <code>Les Sims 4</code>, <code>Los Sims 4</code>, etc.</span>
 </div><div class="card-footer">
   <span>To quickly find the event rewards in game you can use the "Special" &gt; "Event Rewards" filter.</span>
 </div></div>
 
+<div class="card my-4"><div class="card-body">
+  <h2>Events list (from the newest to the oldest):</h2>
+  <div><a href="https://www.ea.com/en/games/the-sims/the-sims-4/news/reapers-rewards-faq"><b>Reaper's Rewards Event</b></a> (September 2024) - event is <b>live!</b> Use the tool to claim the rewards and tie them permanently to your EA account!</div>
+  <div><a href="https://www.ea.com/en/games/the-sims/the-sims-4/news/the-sims-4-events"><b>Happy at Home Login Event</b></a> (June 2024) - event has ended, rewards were added to the base game in update <code>1.109.207</code> because they were initially stored in a local file only, not synced with EA servers, and many people have lost the rewards because of it</div>
+</div><div class="card-footer"></div></div>
+
 </div></div></div>
+
+<script>
+const max_ids = 10;
+const filename = "accountDataDB_001.package";
+const offsets = [[43738, 43766, 43794], [43822, 43850, 43878], [43906, 43934, 43962], [43990, 44018, 44046], [44074, 44102, 44130], [44158, 44186, 44214], [44242, 44270, 44298], [44326, 44354, 44382], [44410, 44438, 44466], [44494, 44522, 44550]];
+
+// read file (blob) as text or array buffer asynchronously
+const readAs = (file, type) => new Promise(resolve => {
+  let reader = new FileReader();
+  reader.onload = e => {
+    resolve(e.target.result);
+  };
+  if(type == "text")
+    reader.readAsText(file);
+  else
+    reader.readAsArrayBuffer(file);
+});
+const downloadBlob = (blob, name) => {
+  const link = document.createElement("a");
+  const url = window.URL.createObjectURL(blob);
+  link.href = url;
+  link.download = name;
+  document.body.appendChild(link);
+  link.click();
+  window.URL.revokeObjectURL(url);
+  link.remove();
+};
+document.querySelector("input").addEventListener("change", async e => {
+  const file = e.target.files[0];
+  const text = await readAs(file, "text");
+  const crlf = text.includes("\r\n");
+  if(file.name.toLowerCase() !== "usersetting.ini") {
+    alert("the file you selected isn't named UserSetting.ini, make sure you select the right file");
+    return;
+  }
+  const ini = {};
+  let group = "";
+  for(const line of text.split(/\r?\n/)) {
+    if(line.length == 0) {
+      continue;
+    }
+    let m = line.match(/^\s*\[(.*?)\]\s*$/);
+    if(m !== null) {
+      group = m[1];
+      if(typeof ini[group] === "undefined") {
+        ini[group] = {};
+      }
+    }
+    else {
+      m = line.match(/^\s*(.*?)\s*=\s*(.*?)\s*$/);
+      if(m === null) {
+        alert("invalid line, it will be skipped: " + line);
+        continue;
+      }
+      if(group === "") {
+        alert("value without a group, this line will be skipped: " + line);
+        continue;
+      }
+      ini[group][m[1]] = m[2];
+    }
+  }
+  if(typeof ini["uiaccountsettings"] === "undefined") {
+    alert("no user settings found, run the game at least once")
+    return;
+  }
+  const userIDs = new Set();
+  for(const ID of Object.keys(ini["uiaccountsettings"])) {
+    userIDs.add(ID.split("#")[0]);
+  }
+  if(userIDs.size > max_ids) {
+    alert(`More than ${max_ids} user IDs found. Delete/rename UserSetting.ini file, run the game, and then select the newly generated file.`);
+    return;
+  }
+
+  const response = await fetch(`files/${filename}`);
+  const buffer = await response.arrayBuffer();
+  const view = new DataView(buffer);
+  let i = 0;
+  for(const user_id of userIDs) {
+    const numerical_id = BigInt(user_id);
+    const dont_ask_me = (numerical_id >> BigInt(32)) | ((numerical_id & BigInt(0xFFFFFFFF)) << BigInt(32));
+    for(const offset of offsets[i]) {
+      view.setBigUint64(offset, dont_ask_me, true /* littleEndian */);
+    }
+    i++;
+  }
+
+  downloadBlob(new Blob([buffer]), "accountDataDB.package");
+});
+const checkboxClick = event => {
+  const checkbox = event.target;
+  document.body.classList[checkbox.checked ? "add" : "remove"](`show-${checkbox.id}`);
+};
+for(const el of document.querySelectorAll('input[type="checkbox"]')) {
+  el.addEventListener("click", checkboxClick);
+}
+</script>
 
 </body></html>
