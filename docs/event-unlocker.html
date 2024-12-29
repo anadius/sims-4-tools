@@ -8,11 +8,8 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <title>Event Rewards Unlocker</title>
   <style>
-    img { max-width: 100%; }
-    .images { display: none; }
-    body.show-images .images { display: block; }
-    .technical { display: none; }
-    body.show-technical .technical { display: block; }
+    label { margin-bottom: 0; }
+    #file-picker { display: none; }
   </style>
   </head>
   <body>
@@ -26,8 +23,11 @@
     <li>If the event has already ended you can still unlock the rewards, but it will work in <b>offline mode only</b>. Every time you start the game online - it will replace the rewards data. It's more convenient to use mods instead. I added this functionality as a bonus.</li>
   </ol>
 
-  <p>Click on the "Browse" button below, navigate to <code>Documents</code>, <code>Electronic Arts</code>, <code>The Sims 4</code>*, and select the <code>UserSetting.ini</code> file. It may be displayed as just <code>UserSetting</code>. Your browser will prompt you to download an <code>accountDataDB.package</code> file. Put that file in the same folder as the <code>UserSetting.ini</code> file.</p>
-  <p><input type="file" class="form-control-file" accept=".ini"></p>
+  <p>Click on the "Choose file" button below, navigate to <code>Documents</code> &gt; <code>Electronic Arts</code> &gt; <code>The Sims 4</code>*, and select the <code>UserSetting.ini</code> file. It may be displayed as just <code>UserSetting</code>. Your browser will prompt you to download an <code>accountDataDB.package</code> file. Put that file in the same folder as the <code>UserSetting.ini</code> file.</p>
+  <div class="form-group">
+    <label for="file-picker"><div class="btn btn-primary">Choose file</div></label>
+    <input type="file" class="form-control-file" id="file-picker" accept=".ini">
+  </div>
   <span>* in some languages this folder is named differently, like <code>Die Sims 4</code>, <code>Les Sims 4</code>, <code>Los Sims 4</code>, etc.</span>
 </div><div class="card-footer">
   <span>To quickly find the event rewards in game you can use the "Special" &gt; "Event Rewards" filter.</span>
