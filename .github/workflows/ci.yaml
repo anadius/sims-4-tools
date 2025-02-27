@@ -11,8 +11,6 @@ jobs:
       LANGUAGE_CHANGER: language-changer
       DLC_TOGGLER: dlc-toggler
       DLC_UNINSTALLER: dlc-uninstaller
-      TS1_LAUNCHER: The Sims 1 Launcher
-      TS2_LAUNCHER: The Sims 2 Launcher
       CHANGED: changed_files.txt
     steps:
       - uses: actions/checkout@v4
@@ -43,20 +41,6 @@ jobs:
           && del "${{ env.DLC_UNINSTALLER }}*.exe"
           && ./_compile.bat "${{ env.DLC_UNINSTALLER }}.au3"
           || echo "${{ env.DLC_UNINSTALLER }} not modified"
-      - name: 'Build ${{ env.TS1_LAUNCHER }}'
-        continue-on-error: true
-        run: >-
-          findstr /L /B "${{ env.TS1_LAUNCHER }}.au3" ${{ env.CHANGED }} >NUL
-          && del "${{ env.TS1_LAUNCHER }}*.exe"
-          && ./_compile_ts1.bat "${{ env.TS1_LAUNCHER }}.au3"
-          || echo "${{ env.TS1_LAUNCHER }} not modified"
-      - name: 'Build ${{ env.TS2_LAUNCHER }}'
-        continue-on-error: true
-        run: >-
-          findstr /L /B "${{ env.TS2_LAUNCHER }}.au3" ${{ env.CHANGED }} >NUL
-          && del "${{ env.TS2_LAUNCHER }}*.exe"
-          && ./_compile_ts2.bat "${{ env.TS2_LAUNCHER }}.au3"
-          || echo "${{ env.TS2_LAUNCHER }} not modified"
       - name: 'Commit binaries'
         run: |
           git config --global user.name 'anadius'
