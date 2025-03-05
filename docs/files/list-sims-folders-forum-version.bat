@@ -191,8 +191,12 @@ function GetFromCommonFolders_($path) {
         $dirs = Get-ChildItem -Attributes Directory+!System -Path $path |
             ? { $_.PsIsContainer -and $_.Name -imatch 'sims.?4' }
     } Catch {
-        $dirs = Get-ChildItem -Path $path -ErrorAction SilentlyContinue |
-            ? { $_.PsIsContainer -and $_.Name -imatch 'sims.?4' }
+        Try {
+            $dirs = Get-ChildItem -Path $path -ErrorAction SilentlyContinue |
+                ? { $_.PsIsContainer -and $_.Name -imatch 'sims.?4' }
+        } Catch {
+            Return
+        }
     }
 
     ForEach ($dir in $dirs) {
